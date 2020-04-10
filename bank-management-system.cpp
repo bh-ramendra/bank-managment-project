@@ -1,415 +1,328 @@
 #include<iostream>
-#include<string.h>
 #include<fstream>
 #include<cctype>
-#include<conio.h>
 #include<iomanip>
-#include<cstdio>
-#include<cstdlib>
-
-#define max 100
+#include <cstdlib>
 using namespace std;
 
-
-class Customer
+class account
 {
+	int acno;
+	char name[50];
+	int deposit;
+	char type;
 public:
-char name[100];
-char address[100];
-char phone[12];
-char from_date[20];
-char to_date[20];
-float payment_advance;
-int booking_id;
-};
+	void create_account();	//function to get data from user
+	void show_account() const;	//function to show data on screen
+	void modify();	//function to add new data
+	void dep(int);	//function to accept amount and add to balance amount
+	void draw(int);	//function to accept amount and subtract from balance amount
+	void report() const;	//function to show data in tabular format
+	int retacno() const;	//function to return account number
+	int retdeposit() const;	//function to return balance amount
+	char rettype() const;	//function to return type of account
+};         //class ends here
 
-
-class Room
+void account::create_account()
 {
-public:
-char type;
-char stype;
-char ac;
-int roomNumber;
-int rent;
-int status;
+	cout<<"\nEnter The account No. : ";
+	cin>>acno;
+	cout<<"\n\nEnter The Name of The account Holder : ";
+	cin.ignore();
+	cin.getline(name,50);
+	cout<<"\nEnter Type of The account (C/S) : ";
+	cin>>type;
+	type=toupper(type);
+	cout<<"\nEnter The Initial amount(>=500 for Saving and >=1000 for current ) : ";
+	cin>>deposit;
+	cout<<"\n\n\nAccount Created..";
+}
 
-class Customer cust;
-class Room addRoom(int);
-void searchRoom(int);
-void deleteRoom(int);
-void displayRoom(Room);
-};
-
-class Room rooms[max];
-int count=0;
-
-
-Room Room::addRoom(int rno)
+void account::show_account() const
 {
-class Room room;
-room.roomNumber=rno;
-cout<<"\nType AC/Non-AC (A/N) : ";
-cin>>room.ac;
-cout<<"\nType Comfort (S/N) : ";
-cin>>room.type;
-cout<<"\nType Size (B/S) : ";
-cin>>room.stype;
-cout<<"\nDaily Rent : ";
-cin>>room.rent;
-room.status=0;
-
-cout<<"\n Room Added Successfully!";
-getch();
-return room;
+	cout<<"\nAccount No. : "<<acno;
+	cout<<"\nAccount Holder Name : ";
+	cout<<name;
+	cout<<"\nType of Account : "<<type;
+	cout<<"\nBalance amount : "<<deposit;
 }
 
 
-void Room::searchRoom(int rno)
+void account::modify()
 {
-int i,found=0;
-for(i=0;i<count;i++)
-{
-if(rooms[i].roomNumber==rno)
-{
-found=1;
-break;
-}
-}
-if(found==1)
-{
-cout<<"Room Details\n";
-if(rooms[i].status==1)
-{
-cout<<"\nRoom is Reserved";
-}
-else
-{
-cout<<"\nRoom is available";
-}
-displayRoom(rooms[i]);
-getch();
-}
-else
-{
-cout<<"\nRoom not found";
-getch();
-}
-}
-
-void Room::displayRoom(Room tempRoom)
-{
-cout<<"\nRoom Number: \t"<<tempRoom.roomNumber;
-cout<<"\nType AC/Non-AC (A/N) "<<tempRoom.ac;
-cout<<"\nType Comfort (S/N) "<<tempRoom.type;
-cout<<"\nType Size (B/S) "<<tempRoom.stype;
-cout<<"\nRent: "<<tempRoom.rent;
+	cout<<"\nAccount No. : "<<acno;
+	cout<<"\nModify Account Holder Name : ";
+	cin.ignore();
+	cin.getline(name,50);
+	cout<<"\nModify Type of Account : ";
+	cin>>type;
+	type=toupper(type);
+	cout<<"\nModify Balance amount : ";
+	cin>>deposit;
 }
 
 
-class HotelMgnt:protected Room
+void account::dep(int x)
 {
-public:
-void checkIn();
-void getAvailRoom();
-void searchCustomer(char *);
-void checkOut(int);
-void guestSummaryReport();
-};
-
-
-void HotelMgnt::guestSummaryReport(){
-
-if(count==0){
-cout<<"\n No Guest in Hotel !!";
-}
-for(int i=0;i<count;i++)
-{
-if(rooms[i].status==1)
-{
-cout<<"\n Customer First Name : "<<rooms[i].cust.name;
-cout<<"\n Room Number : "<<rooms[i].roomNumber;
-cout<<"\n Address (only city) : "<<rooms[i].cust.address;
-cout<<"\n Phone : "<<rooms[i].cust.phone;
-cout<<"\n ---";
+	deposit+=x;
 }
 
-}
-
-getch();
-}
-
-
-void HotelMgnt::checkIn()
+void account::draw(int x)
 {
-int i,found=0,rno;
-
-class Room room;
-cout<<"\nEnter Room number : ";
-cin>>rno;
-for(i=0;i<count;i++)
-{
-if(rooms[i].roomNumber==rno)
-{
-found=1;
-break;
-}
-}
-if(found==1)
-{
-if(rooms[i].status==1)
-{
-cout<<"\nRoom is already Booked";
-getch();
-return;
+	deposit-=x;
 }
 
-cout<<"\nEnter booking id: ";
-cin>>rooms[i].cust.booking_id;
-
-cout<<"\nEnter Customer Name (First Name): ";
-cin>>rooms[i].cust.name;
-
-cout<<"\nEnter Address (only city): ";
-cin>>rooms[i].cust.address;
-
-cout<<"\nEnter Phone: ";
-cin>>rooms[i].cust.phone;
-
-cout<<"\nEnter From Date: ";
-cin>>rooms[i].cust.from_date;
-
-cout<<"\nEnter to  Date: ";
-cin>>rooms[i].cust.to_date;
-
-
-cout<<"\nEnter Advance Payment: ";
-cin>>rooms[i].cust.payment_advance;
-
-rooms[i].status=1;
-
-cout<<"\n Customer Checked-in Successfully..";
-getch();
-}
-}
-
-
-void HotelMgnt::getAvailRoom()
+void account::report() const
 {
-int i,found=0;
-for(i=0;i<count;i++)
-{
-if(rooms[i].status==0)
-{
-displayRoom(rooms[i]);
-cout<<"\n\nPress enter for next room";
-found=1;
-getch();
-}
-}
-if(found==0)
-{
-cout<<"\nAll rooms are reserved";
-getch();
-}
+	cout<<acno<<setw(10)<<" "<<name<<setw(10)<<" "<<type<<setw(6)<<deposit<<endl;
 }
 
-
-void HotelMgnt::searchCustomer(char *pname)
+int account::retacno() const
 {
-int i,found=0;
-for(i=0;i<count;i++)
-{
-if(rooms[i].status==1 && strcmp(rooms[i].cust.name,pname)==0)
-{
-cout<<"\nCustomer Name: "<<rooms[i].cust.name;
-cout<<"\nRoom Number: "<<rooms[i].roomNumber;
-
-cout<<"\n\nPress enter for next record";
-found=1;
-getch();
-}
-}
-if(found==0)
-{
-cout<<"\nPerson not found.";
-getch();
-}
+	return acno;
 }
 
-
-void HotelMgnt::checkOut(int roomNum)
+int account::retdeposit() const
 {
-int i,found=0,days,rno;
-float billAmount=0;
-for(i=0;i<count;i++)
-{
-if(rooms[i].status==1 && rooms[i].roomNumber==roomNum)
-{
-//rno = rooms[i].roomNumber;
-found=1;
-//getch();
-break;
-}
-}
-if(found==1)
-{
-cout<<"\nEnter Number of Days:\t";
-cin>>days;
-billAmount=days * rooms[i].rent;
-
-cout<<"\n\t######## CheckOut Details ########\n";
-cout<<"\nCustomer Name : "<<rooms[i].cust.name;
-cout<<"\nRoom Number : "<<rooms[i].roomNumber;
-cout<<"\nAddress : "<<rooms[i].cust.address;
-cout<<"\nPhone : "<<rooms[i].cust.phone;
-cout<<"\nTotal Amount Due : "<<billAmount<<" /";
-cout<<"\nAdvance Paid: "<<rooms[i].cust.payment_advance<<" /";
-cout<<"\n*** Total Payable: "<<billAmount-rooms[i].cust.payment_advance<<"/ only";
-
-rooms[i].status=0;
-}
-getch();
+	return deposit;
 }
 
+char account::rettype() const
+{
+	return type;
+}
 
-void manageRooms()
-{
-class Room room;
-int opt,rno,i,flag=0;
-char ch;
-do
-{
-system("cls");
-cout<<"\n### Manage Rooms ###";
-cout<<"\n1. Add Room";
-cout<<"\n2. Search Room";
-cout<<"\n3. Back to Main Menu";
-cout<<"\n\nEnter Option: ";
-cin>>opt;
+void write_account();	//function to write record in binary file
+void display_sp(int);	//function to display account details given by user
+void modify_account(int);	//function to modify record of file
+void delete_account(int);	//function to delete record of file
+void display_all();		//function to display all account details
+void deposit_withdraw(int, int); // function to deposit/withdraw amount for given account
+void intro();	//introductory screen function
 
-
-switch(opt)
-{
-case 1:
-cout<<"\nEnter Room Number: ";
-cin>>rno;
-i=0;
-for(i=0;i<count;i++)
-{
-if(rooms[i].roomNumber==rno)
-{
-flag=1;
-}
-}
-if(flag==1)
-{
-cout<<"\nRoom Number is Present.\nPlease enter unique Number";
-flag=0;
-getch();
-}
-else
-{
-rooms[count]=room.addRoom(rno);
-count++;
-}
-break;
-case 2:
-cout<<"\nEnter room number: ";
-cin>>rno;
-room.searchRoom(rno);
-break;
-case 3:
-break;
-default:
-cout<<"\nPlease Enter correct option";
-break;
-}
-}while(opt!=3);
-}
-using namespace std;
 int main()
 {
-class HotelMgnt hm;
-int i,j,opt,rno;
-char ch;
-char pname[100];
+	char ch;
+	int num;
+	intro();
+	do
+	{
+		system("cls");
+		cout<<"\n\n\n\t\t======MAIN MENU======";
+		cout<<"\n\n\t01. NEW ACCOUNT ";
+		cout<<"\n\n\t02. DEPOSIT AMOUNT ";
+		cout<<"\n\n\t03. WITHDRAW AMOUNT ";
+		cout<<"\n\n\t04. BALANCE ENQUIRY ";
+		cout<<"\n\n\t05. ALL ACCOUNT HOLDER LIST ";
+		cout<<"\n\n\t06. CLOSE AN ACCOUNT ";
+		cout<<"\n\n\t07. MODIFY AN ACCOUNT ";
+		cout<<"\n\n\t08. EXIT";
+		cout<<"\n\n\tSelect Your Option (1-8) ";
+		cin>>ch;
+		system("cls");
+		switch(ch)
+		{
+		case '1':
+			write_account();
+			break;
+		case '2':
+			cout<<"\n\n\tEnter the account No. : "; cin>>num;
+			deposit_withdraw(num, 1);
+			break;
+		case '3':
+			cout<<"\n\n\tEnter the account No. : "; cin>>num;
+			deposit_withdraw(num, 2);
+			break;
+		case '4':
+			cout<<"\n\n\tEnter the account No. : "; cin>>num;
+			display_sp(num);
+			break;
+		case '5':
+			display_all();
+			break;
+		case '6':
+			cout<<"\n\n\tEnter The account No. : "; cin>>num;
+			delete_account(num);
+			break;
+		 case '7':
+			cout<<"\n\n\tEnter The account No. : "; cin>>num;
+			modify_account(num);
+			break;
+		 case '8':
+			cout<<"\n\n\tThanks for using the bank";
+			break;
+		 default :cout<<"\a";
+		}
+		cin.ignore();
+		cin.get();
+    }while(ch!='8');
+	return 0;
+}
 
-system("cls");
+void write_account()
+{
+	account ac;
+	ofstream outFile;
+	outFile.open("account.dat",ios::binary|ios::app);
+	ac.create_account();
+	outFile.write(reinterpret_cast<char *> (&ac), sizeof(account));
+	outFile.close();
+}
+void display_sp(int n)
+{
+	account ac;
+	bool flag=false;
+	ifstream inFile;
+	inFile.open("account.dat",ios::binary);
+	if(!inFile)
+	{
+		cout<<"File could not be open !! Press any Key...";
+		return;
+	}
+	cout<<"\nBALANCE DETAILS\n";
+    	while(inFile.read(reinterpret_cast<char *> (&ac), sizeof(account)))
+	{
+		if(ac.retacno()==n)
+		{
+			ac.show_account();
+			flag=true;
+		}
+	}
+    inFile.close();
+	if(flag==false)
+		cout<<"\n\nAccount number does not exist";
+}
 
-do
+void modify_account(int n)
 {
-system("cls");
-cout<<"--- Hotel Management ---\n";
-cout<<"\n1. Manage Rooms";
-cout<<"\n2. Check-In Room";
-cout<<"\n3. Available Rooms";
-cout<<"\n4. Search Customer";
-cout<<"\n5. Check-Out Room";
-cout<<"\n6. Guest Summary Report";
-cout<<"\n7. Exit";
-cout<<"\n\nEnter Option: ";
-cin>>opt;
-switch(opt)
-{
-case 1:
-manageRooms();
-break;
-case 2:
-if(count==0)
-{
-cout<<"\nRooms data is not available.\nPlease add the rooms first.";
-getch();
+	bool found=false;
+	account ac;
+	fstream File;
+    File.open("account.dat",ios::binary|ios::in|ios::out);
+	if(!File)
+	{
+		cout<<"File could not be open !! Press any Key...";
+		return;
+	}
+	while(!File.eof() && found==false)
+	{
+		File.read(reinterpret_cast<char *> (&ac), sizeof(account));
+		if(ac.retacno()==n)
+		{
+			ac.show_account();
+			cout<<"\n\nEnter The New Details of account "<<endl;
+			ac.modify();
+			int pos=(-1)*static_cast<int>(sizeof(account));
+			File.seekp(pos,ios::cur);
+		    File.write(reinterpret_cast<char *> (&ac), sizeof(account));
+		    cout<<"\n\n\t Record Updated ";
+		    found=true;
+		  }
+	}
+	File.close();
+	if(found==false)
+		cout<<"\n\n Record Not Found ";
 }
-else
-hm.checkIn();
-break;
-case 3:
-if(count==0)
-{
-cout<<"\nRooms data is not available.\nPlease add the rooms first.";
-getch();
-}
-else
-hm.getAvailRoom();
-break;
-case 4:
-if(count==0)
-{
-cout<<"\nRooms are not available.\nPlease add the rooms first.";
-getch();
-}
-else
-{
-cout<<"Enter Customer Name: ";
-cin>>pname;
-hm.searchCustomer(pname);
-}
-break;
-case 5:
-if(count==0)
-{
-cout<<"\nRooms are not available.\nPlease add the rooms first.";
-getch();
-}
-else
-{
-cout<<"Enter Room Number : ";
-cin>>rno;
-hm.checkOut(rno);
-}
-break;
-case 6:
-hm.guestSummaryReport();
-break;
-case 7:
-cout<<"\nTHANK YOU! FOR USING SOFTWARE";
-break;
-default:
-cout<<"\nPlease Enter correct option";
-break;
-}
-}while(opt!=7);
 
-getch();
+void delete_account(int n)
+{
+	account ac;
+	ifstream inFile;
+	ofstream outFile;
+	inFile.open("account.dat",ios::binary);
+	if(!inFile)
+	{
+		cout<<"File could not be open !! Press any Key... ";
+		return;
+	}
+	outFile.open("Temp.dat",ios::binary);
+	inFile.seekg(0,ios::beg);
+	while(inFile.read(reinterpret_cast<char *> (&ac), sizeof(account)))
+	{
+		if(ac.retacno()!=n)
+		{
+			outFile.write(reinterpret_cast<char *> (&ac), sizeof(account));
+		}
+	}
+    inFile.close();
+	outFile.close();
+	remove("account.dat");
+	rename("Temp.dat","account.dat");
+	cout<<"\n\n\tRecord Deleted .. ";
+}
+
+void display_all()
+{
+	account ac;
+	ifstream inFile;
+	inFile.open("account.dat",ios::binary);
+	if(!inFile)
+	{
+		cout<<"File could not be open !! Press any Key... ";
+		return;
+	}
+	cout<<"\n\n\t\tACCOUNT HOLDER LIST\n\n";
+	cout<<"====================================================\n";
+	cout<<"A/c no.      NAME           Type  Balance\n";
+	cout<<"====================================================\n";
+	while(inFile.read(reinterpret_cast<char *> (&ac), sizeof(account)))
+	{
+		ac.report();
+	}
+	inFile.close();
+}
+
+void deposit_withdraw(int n, int option)
+{
+	int amt;
+	bool found=false;
+	account ac;
+	fstream File;
+    File.open("account.dat", ios::binary|ios::in|ios::out);
+	if(!File)
+	{
+		cout<<"File could not be open !! Press any Key... ";
+		return;
+	}
+	while(!File.eof() && found==false)
+	{
+		File.read(reinterpret_cast<char *> (&ac), sizeof(account));
+		if(ac.retacno()==n)
+		{
+			ac.show_account();
+			if(option==1)
+			{
+				cout<<"\n\n\tTO DEPOSIT AMOUNT ";
+				cout<<"\n\nEnter The amount to be deposited : ";
+				cin>>amt;
+				ac.dep(amt);
+			}
+		    if(option==2)
+			{
+				cout<<"\n\n\tTO WITHDRAW AMOUNT ";
+				cout<<"\n\nEnter The amount to be withdraw : ";
+				cin>>amt;
+				int bal=ac.retdeposit()-amt;
+				if((bal<500 && ac.rettype()=='S') || (bal<1000 && ac.rettype()=='C'))
+					cout<<"Insufficient balance";
+				else
+					ac.draw(amt);
+		      }
+			int pos=(-1)*static_cast<int>(sizeof(ac));
+			File.seekp(pos,ios::cur);
+			File.write(reinterpret_cast<char *> (&ac), sizeof(account));
+			cout<<"\n\n\t Record Updated ";
+			found=true;
+	       }
+         }
+    File.close();
+	if(found==false)
+		cout<<"\n\n Record Not Found ";
+}
+
+void intro()
+{
+	cout<<"\n\n\n\t\t\t\t\t***RAMAIAH BANKING SYSTEM***";
+	cout<<"\n\n\n\n\t\t\t\t\t\t\t     MADE BY : RAMENDRA BHARADWAJ ";
+	cin.get();
 }
